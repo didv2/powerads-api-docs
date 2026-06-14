@@ -1,0 +1,109 @@
+import { CodeBlock } from '@/components/code-block';
+import { Callout } from '@/components/callout';
+
+# Check Banner Status
+
+<span className="inline-block px-2 py-0.5 rounded text-xs font-bold bg-blue-100 text-blue-700 mr-2">GET</span>
+`/api/v1/banner/status/{jobId}`
+
+Check the status of a banner generation job and retrieve the result when ready.
+
+## Example Request
+
+<CodeBlock
+  language="bash"
+  code={`curl https://api.powerads.ai/api/v1/banner/status/banner_abc123def456 \\
+  -H "x-api-key: pk_live_your_api_key_here"`}
+/>
+
+## Response — Processing
+
+<CodeBlock
+  language="json"
+  title="200 OK — In progress"
+  code={`{
+  "jobId": "banner_abc123def456",
+  "status": "processing",
+  "bannerUrl": null,
+  "strategy": null,
+  "aspectRatio": null,
+  "currentPhase": "image",
+  "error": null
+}`}
+/>
+
+The `currentPhase` field tells you where in the pipeline the job is:
+
+| Phase | Description |
+|-------|-------------|
+| `starting` | Job created, queued |
+| `strategy` | AI is generating the creative brief |
+| `image` | Banner image is being generated |
+| `critique` | Hebrew text quality check (Hebrew banners only) |
+
+## Response — Done
+
+<CodeBlock
+  language="json"
+  title="200 OK — Complete"
+  code={`{
+  "jobId": "banner_abc123def456",
+  "status": "done",
+  "bannerUrl": "https://ocfjqwf3uvpnj3wa.public.blob.vercel-storage.com/images/banner.png",
+  "strategy": {
+    "headline": "הבנק סירב לכם? אל תוותרו על הבית",
+    "subtext": "אנחנו נשיג לכם את אישור המשכנתא שאתם צריכים",
+    "cta": "בדקו זכאות למשכנתא כעת",
+    "angle": "Pain point + outcome",
+    "visual_concept": "Split-screen: bank rejection vs. happy family with keys",
+    "color_mood": "Navy blue with warm gold accents",
+    "psychology_trigger": "Loss aversion",
+    "design_style": "split-layout"
+  },
+  "aspectRatio": "1:1",
+  "currentPhase": null,
+  "error": null
+}`}
+/>
+
+## Response — Failed
+
+<CodeBlock
+  language="json"
+  title="200 OK — Failed"
+  code={`{
+  "jobId": "banner_abc123def456",
+  "status": "failed",
+  "bannerUrl": null,
+  "strategy": null,
+  "aspectRatio": null,
+  "currentPhase": null,
+  "error": "insufficient_tokens"
+}`}
+/>
+
+## Polling Pattern
+
+Banner generation typically takes 30–90 seconds. A simple polling approach:
+
+<CodeBlock
+  language="javascript"
+  code={`async function waitForBanner(jobId, apiKey) {
+  while (true) {
+    const res = await fetch(
+      \`https://api.powerads.ai/api/v1/banner/status/\${jobId}\`,
+      { headers: { 'x-api-key': apiKey } }
+    );
+    const data = await res.json();
+    
+    if (data.status === 'done') return data.bannerUrl;
+    if (data.status === 'failed') throw new Error(data.error);
+    
+    await new Promise(r => setTimeout(r, 5000)); // poll every 5s
+  }
+}`}
+/>
+
+<Callout type="info">
+  For production use, we recommend using <a href="/docs/video/webhooks">webhooks</a> instead of polling. The same webhook format works for both video and banner generation.
+</Callout>

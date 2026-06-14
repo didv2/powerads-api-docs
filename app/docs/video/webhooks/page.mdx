@@ -3,7 +3,9 @@ import { Callout } from '@/components/callout';
 
 # Webhooks
 
-Instead of polling the status endpoint, you can provide a `webhookUrl` when generating a video. PowerAds will send a POST request to your URL when the video is complete (or if it fails).
+Instead of polling the status endpoint, you can provide a `webhookUrl` when generating a video or banner. PowerAds will send a POST request to your URL when the content is complete.
+
+Webhooks work the same way for both the [Video API](/docs/video/generate) and [Banner API](/docs/banner/generate).
 
 ## How It Works
 

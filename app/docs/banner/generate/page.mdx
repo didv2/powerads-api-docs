@@ -1,0 +1,159 @@
+import { CodeBlock } from '@/components/code-block';
+import { CodeTabs } from '@/components/code-tabs';
+import { ParamTable } from '@/components/param-table';
+import { Callout } from '@/components/callout';
+
+# Generate Banner
+
+<span className="inline-block px-2 py-0.5 rounded text-xs font-bold bg-emerald-100 text-emerald-700 mr-2">POST</span>
+`/api/v1/banner/generate`
+
+Generate a professional AI-powered banner ad from a single API call. The AI creates a creative strategy (headline, subtext, CTA, visual concept) and then generates the banner image.
+
+Returns a `jobId` immediately — the banner is generated in the background (~30–90 seconds). Use the [status endpoint](/docs/banner/status) or a webhook to get the result.
+
+## Request Body
+
+<ParamTable params={[
+  { name: 'businessName', type: 'string', required: true, description: 'Name of the business' },
+  { name: 'businessDescription', type: 'string', required: true, description: 'What the business does, its products or services' },
+  { name: 'targetAudience', type: 'string', description: 'Who the ad targets' },
+  { name: 'language', type: 'string', default: '"he"', description: 'Language code (he, en, ar, ru, es, fr, de, pt)' },
+  { name: 'objective', type: 'string', default: '"awareness"', description: 'Ad objective: awareness, sales, leads, traffic' },
+  { name: 'aspectRatio', type: 'string', default: '"1:1"', description: 'Banner aspect ratio: 1:1, 16:9, 9:16, 4:5' },
+  { name: 'designStyle', type: 'string', description: 'Design style: auto, minimalist, bold, luxury, playful, corporate, split-layout' },
+  { name: 'customCopy', type: 'object', description: 'Override AI-generated copy with your own text' },
+  { name: 'customCopy.headline', type: 'string', description: 'Custom headline text' },
+  { name: 'customCopy.subtext', type: 'string', description: 'Custom subtext / subtitle' },
+  { name: 'customCopy.cta', type: 'string', description: 'Custom call-to-action text' },
+  { name: 'images', type: 'string[]', description: 'Brand/product image URLs for reference' },
+  { name: 'logoUrl', type: 'string', description: 'Logo URL to include in the banner' },
+  { name: 'brandColors', type: 'object', description: 'Brand color palette' },
+  { name: 'brandColors.primary', type: 'string', description: 'Primary brand color (hex)' },
+  { name: 'brandColors.secondary', type: 'string', description: 'Secondary brand color (hex)' },
+  { name: 'brandColors.accent', type: 'string', description: 'Accent color (hex)' },
+  { name: 'webhookUrl', type: 'string', description: 'URL to POST when the banner is ready' },
+]} />
+
+## Example Request
+
+<CodeTabs tabs={[
+  {
+    label: 'curl',
+    language: 'bash',
+    code: `curl -X POST https://api.powerads.ai/api/v1/banner/generate \\
+  -H "Content-Type: application/json" \\
+  -H "x-api-key: pk_live_your_api_key_here" \\
+  -d '{
+    "businessName": "Café Sol",
+    "businessDescription": "Artisan coffee shop in the heart of Tel Aviv. Specialty beans, handcrafted drinks.",
+    "targetAudience": "Coffee lovers aged 25-45",
+    "language": "he",
+    "objective": "awareness",
+    "aspectRatio": "1:1",
+    "brandColors": {
+      "primary": "#2d1810",
+      "secondary": "#d4a574"
+    },
+    "webhookUrl": "https://your-server.com/webhooks/banner"
+  }'`,
+  },
+  {
+    label: 'JavaScript',
+    language: 'javascript',
+    code: `const response = await fetch(
+  'https://api.powerads.ai/api/v1/banner/generate',
+  {
+    method: 'POST',
+    headers: {
+      'Content-Type': 'application/json',
+      'x-api-key': 'pk_live_your_api_key_here',
+    },
+    body: JSON.stringify({
+      businessName: 'Café Sol',
+      businessDescription: 'Artisan coffee shop in the heart of Tel Aviv.',
+      objective: 'awareness',
+      aspectRatio: '1:1',
+      webhookUrl: 'https://your-server.com/webhooks/banner',
+    }),
+  }
+);
+const data = await response.json();
+console.log(data.jobId); // "banner_abc123def456"`,
+  },
+  {
+    label: 'Python',
+    language: 'python',
+    code: `import requests
+
+response = requests.post(
+    "https://api.powerads.ai/api/v1/banner/generate",
+    headers={
+        "Content-Type": "application/json",
+        "x-api-key": "pk_live_your_api_key_here",
+    },
+    json={
+        "businessName": "Café Sol",
+        "businessDescription": "Artisan coffee shop in the heart of Tel Aviv.",
+        "objective": "awareness",
+        "aspectRatio": "1:1",
+        "webhookUrl": "https://your-server.com/webhooks/banner",
+    },
+)
+data = response.json()
+print(data["jobId"])  # "banner_abc123def456"`,
+  },
+]} />
+
+## Response
+
+<CodeBlock
+  language="json"
+  title="200 OK"
+  code={`{
+  "jobId": "banner_abc123def456",
+  "status": "processing",
+  "message": "Banner generation started. Use GET /api/v1/banner/status/{jobId} to check progress."
+}`}
+/>
+
+## Generation Pipeline
+
+The banner goes through three phases:
+
+| Phase | Description | Duration |
+|-------|-------------|----------|
+| **strategy** | AI generates creative brief (headline, subtext, CTA, visual concept, psychology trigger) | ~5-10s |
+| **image** | Banner image generated based on the strategy | ~30-60s |
+| **critique** | Hebrew text quality check + auto-retry if needed (Hebrew only) | ~10-15s |
+
+## Error Responses
+
+| Status | Description |
+|--------|-------------|
+| `400` | Missing required fields (`businessName`, `businessDescription`) |
+| `401` | Invalid or missing API key |
+| `402` | Insufficient tokens |
+| `429` | Rate limit exceeded |
+
+## Using Custom Copy
+
+You can override the AI-generated copy with your own text:
+
+<CodeBlock
+  language="json"
+  code={`{
+  "businessName": "Café Sol",
+  "businessDescription": "Artisan coffee shop",
+  "customCopy": {
+    "headline": "הטעם שמתחיל את הבוקר",
+    "subtext": "קפה טרי כל יום מ-6:00",
+    "cta": "הזמינו עכשיו"
+  },
+  "aspectRatio": "1:1"
+}`}
+/>
+
+<Callout type="info">
+  When custom copy is provided, the AI skips the strategy phase and goes directly to image generation using your text.
+</Callout>

@@ -33,6 +33,13 @@ const navigation: NavSection[] = [
     ],
   },
   {
+    title: 'Banner API',
+    items: [
+      { title: 'Generate Banner', href: '/docs/banner/generate', method: 'POST' },
+      { title: 'Check Status', href: '/docs/banner/status', method: 'GET' },
+    ],
+  },
+  {
     title: 'Models',
     items: [
       { title: 'Video Models', href: '/docs/models' },
