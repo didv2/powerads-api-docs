@@ -9,7 +9,7 @@ PowerAds lets you generate professional AI-powered video ads through a simple RE
 
 All API requests are made to:
 
-<CodeBlock code="https://powerads-video-v4-cb9f40b6202a.herokuapp.com" language="text" />
+<CodeBlock code="https://video-api.powerads.ai" language="text" />
 
 ## Capabilities
 
@@ -30,7 +30,7 @@ Here's a minimal example to generate a video ad:
 <CodeBlock
   language="bash"
   title="Generate a video"
-  code={`curl -X POST https://powerads-video-v4-cb9f40b6202a.herokuapp.com/api/v1/video/generate \\
+  code={`curl -X POST https://video-api.powerads.ai/api/v1/video/generate \\
   -H "Content-Type: application/json" \\
   -H "x-api-key: pk_live_your_api_key_here" \\
   -d '{
