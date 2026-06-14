@@ -16,7 +16,7 @@ Create an AI-generated video ad. The request starts an asynchronous pipeline —
 
 <ParamTable params={[
   { name: 'businessName', type: 'string', required: true, description: 'Name of the business or product being advertised' },
-  { name: 'businessDescription', type: 'string', description: 'Brief description of the business, its products, or services' },
+  { name: 'businessDescription', type: 'string', required: true, description: 'Brief description of the business, its products, or services' },
   { name: 'businessCategory', type: 'string', description: 'Industry or category (e.g., "restaurant", "saas", "ecommerce")' },
   { name: 'targetAudience', type: 'string', description: 'Who the ad is targeting (e.g., "young professionals ages 25-35")' },
   { name: 'language', type: 'string', default: '"he"', description: 'Language for script and voiceover (ISO 639-1 code)' },
