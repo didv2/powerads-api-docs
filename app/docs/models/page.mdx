@@ -1,0 +1,74 @@
+import { CodeBlock } from '@/components/code-block';
+import { Callout } from '@/components/callout';
+
+# Video Models
+
+Video models are AI presenters — virtual characters with a face, voice, and visual style that appear in your generated ads. They make your ads feel more personal and engaging.
+
+## What Are Models?
+
+Each model represents an AI presenter with:
+
+| Field | Type | Description |
+|-------|------|-------------|
+| `id` | string | Unique model identifier |
+| `name` | string | Display name of the model |
+| `gender` | string | Gender of the presenter (`male` or `female`) |
+| `voice_id` | string | Associated ElevenLabs voice ID |
+| `primary_image_url` | string | URL to the model's primary reference image |
+
+## How to Use
+
+Pass the `modelId` parameter in your [generate request](/docs/video/generate):
+
+<CodeBlock
+  language="json"
+  code={`{
+  "businessName": "Café Sol",
+  "modelId": "model_sarah_01",
+  "adStyle": "ugc",
+  "language": "he"
+}`}
+/>
+
+The AI will generate the video with that model as the on-screen presenter, using their face and voice.
+
+## Model Sources
+
+### Personal Models (Studio)
+
+Create custom models in the **PowerAds Studio**:
+
+1. Go to **Dashboard → Studio → Models**
+2. Upload reference images of your presenter
+3. Select a voice
+4. The model is available immediately in your API requests
+
+Personal models are **private to your account** — only you can use them.
+
+### Public Catalog
+
+PowerAds also provides a catalog of pre-made models that any user can use. Browse them in **Dashboard → Studio → Model Catalog**.
+
+## Alternative: Direct Image URL
+
+If you don't have a pre-configured model, you can pass a presenter image directly:
+
+<CodeBlock
+  language="json"
+  code={`{
+  "businessName": "Café Sol",
+  "modelImageUrl": "https://example.com/presenter.jpg",
+  "adStyle": "ugc"
+}`}
+/>
+
+<Callout type="info">
+  When using <code>modelImageUrl</code>, the system will auto-select an appropriate voice. For best results, use a <code>modelId</code> with a pre-configured voice.
+</Callout>
+
+## Tips
+
+- **Consistency** — use the same model across a campaign for brand recognition
+- **Match the audience** — choose a presenter that resonates with your target demographic
+- **High-quality images** — models work best with clear, well-lit reference photos

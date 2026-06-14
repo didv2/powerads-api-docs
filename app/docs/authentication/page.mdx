@@ -1,0 +1,65 @@
+import { CodeBlock } from '@/components/code-block';
+import { Callout } from '@/components/callout';
+
+# Authentication
+
+All API requests require authentication via an API key. Each key is tied to a user account — the system automatically resolves your user identity from the key, so you never need to pass a `userId` parameter.
+
+## API Keys
+
+API keys use the format:
+
+<CodeBlock code="pk_live_a1b2c3d4e5f6..." language="text" />
+
+## Getting Your Key
+
+1. Log in to the [PowerAds Dashboard](https://app.powerads.ai)
+2. Go to **Settings → API Key**
+3. Click **Generate API Key**
+4. Copy your key immediately
+
+<Callout type="warning" title="Save your key">
+  Your API key is shown **only once** at creation. We store a hashed version — if you lose it, you'll need to generate a new one.
+</Callout>
+
+## Using Your Key
+
+Pass your API key in one of two ways:
+
+### Option 1: `x-api-key` Header (Recommended)
+
+<CodeBlock
+  language="bash"
+  code={`curl https://powerads-video-v4-cb9f40b6202a.herokuapp.com/api/v1/video/generate \\
+  -H "x-api-key: pk_live_your_api_key_here" \\
+  -H "Content-Type: application/json" \\
+  -d '{"businessName": "My Business"}'`}
+/>
+
+### Option 2: `Authorization` Bearer Token
+
+<CodeBlock
+  language="bash"
+  code={`curl https://powerads-video-v4-cb9f40b6202a.herokuapp.com/api/v1/video/generate \\
+  -H "Authorization: Bearer pk_live_your_api_key_here" \\
+  -H "Content-Type: application/json" \\
+  -d '{"businessName": "My Business"}'`}
+/>
+
+## Error Responses
+
+If authentication fails, you'll receive:
+
+<CodeBlock
+  language="json"
+  title="401 Unauthorized"
+  code={`{
+  "error": "Invalid or missing API key"
+}`}
+/>
+
+## Security Best Practices
+
+- **Never expose keys in client-side code** — always call the API from your server
+- **Rotate keys periodically** — generate a new key and deprecate the old one
+- **Use environment variables** — store keys in `.env` files, not in source code

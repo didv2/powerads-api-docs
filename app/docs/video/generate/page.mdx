@@ -1,0 +1,164 @@
+import { CodeBlock } from '@/components/code-block';
+import { CodeTabs } from '@/components/code-tabs';
+import { ParamTable } from '@/components/param-table';
+import { Callout } from '@/components/callout';
+
+# Generate Video
+
+<div className="flex items-center gap-3 mb-6">
+  <span className="text-sm font-bold px-2.5 py-1 rounded bg-blue-100 text-blue-700">POST</span>
+  <code className="text-sm font-mono text-gray-600">/api/v1/video/generate</code>
+</div>
+
+Create an AI-generated video ad. The request starts an asynchronous pipeline — you'll receive a `jobId` to track progress via the [status endpoint](/docs/video/status) or a [webhook](/docs/video/webhooks).
+
+## Request Body
+
+<ParamTable params={[
+  { name: 'businessName', type: 'string', required: true, description: 'Name of the business or product being advertised' },
+  { name: 'businessDescription', type: 'string', description: 'Brief description of the business, its products, or services' },
+  { name: 'businessCategory', type: 'string', description: 'Industry or category (e.g., "restaurant", "saas", "ecommerce")' },
+  { name: 'targetAudience', type: 'string', description: 'Who the ad is targeting (e.g., "young professionals ages 25-35")' },
+  { name: 'language', type: 'string', default: '"he"', description: 'Language for script and voiceover (ISO 639-1 code)' },
+  { name: 'adStyle', type: 'string', default: '"ugc"', description: 'Visual style of the ad — ugc, cinematic, product, etc.' },
+  { name: 'customInstructions', type: 'string', description: 'Free-text creative direction for the AI scriptwriter' },
+  { name: 'keyBenefits', type: 'string[]', description: 'List of key selling points to highlight in the ad' },
+  { name: 'images', type: 'string[]', description: 'URLs to brand images (logo, product photos) to include' },
+  { name: 'modelId', type: 'string', description: 'ID of an AI presenter model (from video_models)' },
+  { name: 'modelImageUrl', type: 'string', description: 'Direct URL to a presenter image (alternative to modelId)' },
+  { name: 'captionStyle', type: 'string', default: '"classic"', description: 'Caption overlay style: classic, minimal, bold, or none' },
+  { name: 'aspectRatio', type: 'string', default: '"9:16"', description: 'Video dimensions: 9:16 (vertical), 16:9 (landscape), or 1:1 (square)' },
+  { name: 'videoTier', type: 'string', default: '"premium"', description: 'Quality tier: basic (faster, fewer tokens) or premium (higher quality)' },
+  { name: 'webhookUrl', type: 'string', description: 'URL to receive a POST when video is complete' },
+]} />
+
+## Code Examples
+
+<CodeTabs tabs={[
+  {
+    label: 'cURL',
+    language: 'bash',
+    code: `curl -X POST https://powerads-video-v4-cb9f40b6202a.herokuapp.com/api/v1/video/generate \\
+  -H "Content-Type: application/json" \\
+  -H "x-api-key: pk_live_your_api_key_here" \\
+  -d '{
+    "businessName": "Café Sol",
+    "businessDescription": "Artisan coffee shop in the heart of Tel Aviv. Specialty beans, handcrafted drinks.",
+    "businessCategory": "restaurant",
+    "targetAudience": "Coffee lovers, ages 20-40, Tel Aviv area",
+    "language": "he",
+    "adStyle": "ugc",
+    "keyBenefits": ["Specialty single-origin beans", "Cozy atmosphere", "Free WiFi"],
+    "captionStyle": "bold",
+    "aspectRatio": "9:16",
+    "videoTier": "premium",
+    "webhookUrl": "https://your-server.com/webhooks/powerads"
+  }'`
+  },
+  {
+    label: 'JavaScript',
+    language: 'javascript',
+    code: `const response = await fetch(
+  'https://powerads-video-v4-cb9f40b6202a.herokuapp.com/api/v1/video/generate',
+  {
+    method: 'POST',
+    headers: {
+      'Content-Type': 'application/json',
+      'x-api-key': 'pk_live_your_api_key_here',
+    },
+    body: JSON.stringify({
+      businessName: 'Café Sol',
+      businessDescription: 'Artisan coffee shop in the heart of Tel Aviv.',
+      businessCategory: 'restaurant',
+      targetAudience: 'Coffee lovers, ages 20-40, Tel Aviv area',
+      language: 'he',
+      adStyle: 'ugc',
+      keyBenefits: ['Specialty single-origin beans', 'Cozy atmosphere', 'Free WiFi'],
+      captionStyle: 'bold',
+      aspectRatio: '9:16',
+      videoTier: 'premium',
+      webhookUrl: 'https://your-server.com/webhooks/powerads',
+    }),
+  }
+);
+
+const data = await response.json();
+console.log(data.jobId); // "job_abc123def456"`
+  },
+  {
+    label: 'Python',
+    language: 'python',
+    code: `import requests
+
+response = requests.post(
+    "https://powerads-video-v4-cb9f40b6202a.herokuapp.com/api/v1/video/generate",
+    headers={
+        "Content-Type": "application/json",
+        "x-api-key": "pk_live_your_api_key_here",
+    },
+    json={
+        "businessName": "Café Sol",
+        "businessDescription": "Artisan coffee shop in the heart of Tel Aviv.",
+        "businessCategory": "restaurant",
+        "targetAudience": "Coffee lovers, ages 20-40, Tel Aviv area",
+        "language": "he",
+        "adStyle": "ugc",
+        "keyBenefits": ["Specialty single-origin beans", "Cozy atmosphere", "Free WiFi"],
+        "captionStyle": "bold",
+        "aspectRatio": "9:16",
+        "videoTier": "premium",
+        "webhookUrl": "https://your-server.com/webhooks/powerads",
+    },
+)
+
+data = response.json()
+print(data["jobId"])  # "job_abc123def456"`
+  },
+]} />
+
+## Response
+
+<CodeBlock
+  language="json"
+  title="200 OK"
+  code={`{
+  "jobId": "job_abc123def456",
+  "status": "processing",
+  "message": "Video generation started. Use the status endpoint to track progress."
+}`}
+/>
+
+## Error Responses
+
+### 401 Unauthorized
+
+<CodeBlock
+  language="json"
+  code={`{
+  "error": "Invalid or missing API key"
+}`}
+/>
+
+### 400 Bad Request
+
+<CodeBlock
+  language="json"
+  code={`{
+  "error": "businessName is required"
+}`}
+/>
+
+### 402 Payment Required
+
+<CodeBlock
+  language="json"
+  code={`{
+  "error": "Insufficient tokens. Please top up your balance.",
+  "required": 150,
+  "available": 20
+}`}
+/>
+
+<Callout type="info">
+  Video generation is asynchronous — a 200 response means the job was accepted, not completed. Use the [status endpoint](/docs/video/status) or [webhooks](/docs/video/webhooks) to track completion.
+</Callout>

@@ -1,0 +1,62 @@
+import { CodeBlock } from '@/components/code-block';
+import { Callout } from '@/components/callout';
+
+# Rate Limits
+
+The API enforces rate limits to ensure fair usage and platform stability.
+
+## Default Limits
+
+| Limit | Value |
+|-------|-------|
+| Requests per minute | **10** per API key |
+| Concurrent video jobs | Based on your plan |
+
+## Rate Limit Response
+
+When you exceed the limit, the API responds with:
+
+<CodeBlock
+  language="json"
+  title="429 Too Many Requests"
+  code={`{
+  "error": "Rate limit exceeded. Try again later.",
+  "retryAfter": 12
+}`}
+/>
+
+The response includes a `Retry-After` header (in seconds) indicating when you can make the next request.
+
+## Handling Rate Limits
+
+<Callout type="info" title="Best practice">
+  Implement exponential backoff in your integration. Start with the `Retry-After` value and increase wait times on consecutive 429 responses.
+</Callout>
+
+### Example: Retry Logic (JavaScript)
+
+<CodeBlock
+  language="javascript"
+  code={`async function callWithRetry(url, options, maxRetries = 3) {
+  for (let i = 0; i < maxRetries; i++) {
+    const res = await fetch(url, options);
+
+    if (res.status === 429) {
+      const retryAfter = parseInt(res.headers.get('Retry-After') || '10');
+      console.log(\`Rate limited. Retrying in \${retryAfter}s...\`);
+      await new Promise(r => setTimeout(r, retryAfter * 1000));
+      continue;
+    }
+
+    return res;
+  }
+
+  throw new Error('Max retries exceeded');
+}`}
+/>
+
+## Tips
+
+- **Batch wisely** — if generating multiple videos, space requests at least 6 seconds apart
+- **Use webhooks** — instead of polling status frequently, let us notify you when a video is done
+- **Cache results** — store video URLs and status locally to avoid redundant API calls

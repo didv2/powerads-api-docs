@@ -1,0 +1,70 @@
+import { CodeBlock } from '@/components/code-block';
+import { Callout } from '@/components/callout';
+
+# Token System
+
+PowerAds uses a token-based billing system. Every video generation consumes tokens, which are deducted from your account balance as each step of the pipeline runs.
+
+## How Tokens Work
+
+Tokens are deducted **per pipeline step** as your video progresses through generation:
+
+| Step | Description | Token Cost |
+|------|-------------|------------|
+| Script generation | AI writes the ad script | Low |
+| Text-to-speech | Voiceover generation per scene | Low |
+| Image generation | AI-generated visuals per scene | Medium |
+| Video generation | Video clip rendering per scene | High |
+| Stitching | Final assembly and encoding | Low |
+
+The total cost depends on:
+- **Video tier** — Premium costs more than Basic
+- **Number of scenes** — More scenes = more TTS, image, and video steps
+- **Aspect ratio** — Wider formats may use slightly more compute
+
+## Video Tiers
+
+| Tier | Quality | Speed | Token Cost |
+|------|---------|-------|------------|
+| `basic` | Good — suitable for drafts and testing | Faster | Lower |
+| `premium` | Best — production-ready quality | Standard | Higher |
+
+## Checking Your Balance
+
+Your token balance is visible in the **Dashboard → Billing** section.
+
+<Callout type="info" title="API balance check">
+  Currently, balance checks are available through the dashboard. An API endpoint for programmatic balance queries is coming soon.
+</Callout>
+
+## Insufficient Tokens
+
+If your balance is too low to start a video, the API returns:
+
+<CodeBlock
+  language="json"
+  title="402 Payment Required"
+  code={`{
+  "error": "Insufficient tokens. Please top up your balance.",
+  "required": 150,
+  "available": 20
+}`}
+/>
+
+<Callout type="error" title="Tokens are non-refundable per step">
+  Tokens are deducted as each pipeline step completes. If a job fails midway, tokens for completed steps are still consumed. Failed steps themselves are not charged.
+</Callout>
+
+## Buying Tokens
+
+1. Go to **Dashboard → Billing**
+2. Choose a token package
+3. Pay via credit card
+4. Tokens are credited immediately
+
+## Best Practices
+
+- **Start with Basic tier** for testing and drafts, then switch to Premium for final production
+- **Monitor your balance** before batch-generating multiple videos
+- **Use webhooks** to track completion and avoid wasting tokens on redundant status polling
+- **Provide detailed inputs** — better descriptions lead to better first-try results, reducing the need to regenerate

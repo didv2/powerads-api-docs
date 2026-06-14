@@ -1,0 +1,125 @@
+import { CodeBlock } from '@/components/code-block';
+import { Callout } from '@/components/callout';
+
+# Check Video Status
+
+<div className="flex items-center gap-3 mb-6">
+  <span className="text-sm font-bold px-2.5 py-1 rounded bg-green-100 text-green-700">GET</span>
+  <code className="text-sm font-mono text-gray-600">/api/v1/video/status/{'{jobId}'}</code>
+</div>
+
+Check the current status of a video generation job. Use the `jobId` returned from the [generate endpoint](/docs/video/generate).
+
+## Request
+
+<CodeBlock
+  language="bash"
+  code={`curl https://powerads-video-v4-cb9f40b6202a.herokuapp.com/api/v1/video/status/job_abc123def456 \\
+  -H "x-api-key: pk_live_your_api_key_here"`}
+/>
+
+## Response Fields
+
+| Field | Type | Description |
+|-------|------|-------------|
+| `jobId` | string | The unique job identifier |
+| `status` | string | Current status: `processing`, `done`, or `failed` |
+| `videoUrl` | string \| null | URL to the finished video (only when `done`) |
+| `currentStep` | string | Which pipeline step is currently running |
+| `progress` | number | Estimated progress percentage (0–100) |
+| `error` | string \| null | Error message if status is `failed` |
+
+## Example Responses
+
+### Processing
+
+<CodeBlock
+  language="json"
+  title="200 OK — Processing"
+  code={`{
+  "jobId": "job_abc123def456",
+  "status": "processing",
+  "videoUrl": null,
+  "currentStep": "image_gen",
+  "progress": 55,
+  "error": null
+}`}
+/>
+
+### Done
+
+<CodeBlock
+  language="json"
+  title="200 OK — Complete"
+  code={`{
+  "jobId": "job_abc123def456",
+  "status": "done",
+  "videoUrl": "https://storage.powerads.ai/videos/job_abc123def456/final.mp4",
+  "currentStep": "stitch",
+  "progress": 100,
+  "error": null
+}`}
+/>
+
+### Failed
+
+<CodeBlock
+  language="json"
+  title="200 OK — Failed"
+  code={`{
+  "jobId": "job_abc123def456",
+  "status": "failed",
+  "videoUrl": null,
+  "currentStep": "video_gen",
+  "progress": 70,
+  "error": "Video generation timed out. Please try again."
+}`}
+/>
+
+## Pipeline Steps
+
+Each video goes through the following pipeline. The `currentStep` field indicates where the job is:
+
+| Step | Description |
+|------|-------------|
+| `input` | Validating input and resolving user context |
+| `script_gen` | AI generates the ad script based on your inputs |
+| `script_review` | Script is reviewed for quality and compliance |
+| `script_refine` | Script is refined and finalized |
+| `scene_tts` | Text-to-speech voiceover generation per scene |
+| `bed_music` | Background music selection and mixing |
+| `image_gen` | AI-generated visuals for each scene |
+| `video_gen` | Video clips rendered for each scene |
+| `stitch` | Final video assembly — stitching clips, audio, and captions |
+
+<Callout type="info" title="Typical duration">
+  Most videos complete in 2–5 minutes depending on complexity and tier. Premium tier takes slightly longer due to higher quality processing.
+</Callout>
+
+## Polling Strategy
+
+If you're not using webhooks, poll the status endpoint periodically:
+
+<CodeBlock
+  language="javascript"
+  code={`async function waitForVideo(jobId, apiKey) {
+  const url = \`https://powerads-video-v4-cb9f40b6202a.herokuapp.com/api/v1/video/status/\${jobId}\`;
+
+  while (true) {
+    const res = await fetch(url, {
+      headers: { 'x-api-key': apiKey },
+    });
+    const data = await res.json();
+
+    if (data.status === 'done') return data.videoUrl;
+    if (data.status === 'failed') throw new Error(data.error);
+
+    console.log(\`[\${data.progress}%] \${data.currentStep}...\`);
+    await new Promise(r => setTimeout(r, 5000)); // Poll every 5s
+  }
+}`}
+/>
+
+<Callout type="warning">
+  Prefer [webhooks](/docs/video/webhooks) over polling. Webhooks are more efficient and you'll get notified the instant your video is ready.
+</Callout>

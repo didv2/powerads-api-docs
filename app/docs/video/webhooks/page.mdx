@@ -1,0 +1,94 @@
+import { CodeBlock } from '@/components/code-block';
+import { Callout } from '@/components/callout';
+
+# Webhooks
+
+Instead of polling the status endpoint, you can provide a `webhookUrl` when generating a video. PowerAds will send a POST request to your URL when the video is complete (or if it fails).
+
+## How It Works
+
+1. Include `webhookUrl` in your [generate request](/docs/video/generate)
+2. When the video finishes, we send a `POST` to that URL
+3. Your server processes the result and returns a `2xx` response
+
+## Webhook Payload
+
+<CodeBlock
+  language="json"
+  title="POST to your webhookUrl"
+  code={`{
+  "jobId": "job_abc123def456",
+  "status": "done",
+  "videoUrl": "https://storage.powerads.ai/videos/job_abc123def456/final.mp4",
+  "userId": "user_789xyz"
+}`}
+/>
+
+If the job fails:
+
+<CodeBlock
+  language="json"
+  code={`{
+  "jobId": "job_abc123def456",
+  "status": "failed",
+  "videoUrl": null,
+  "userId": "user_789xyz",
+  "error": "Video generation timed out"
+}`}
+/>
+
+## Requirements
+
+- Your endpoint must return a **2xx status code** within 10 seconds
+- The URL must be **publicly accessible** (HTTPS recommended)
+- Content-Type of the POST is `application/json`
+
+## Retry Behavior
+
+If your endpoint doesn't respond with 2xx:
+
+| Attempt | Delay |
+|---------|-------|
+| 1st retry | 30 seconds |
+| 2nd retry | 2 minutes |
+| 3rd retry | 10 minutes |
+
+After 3 failed retries, the webhook is abandoned. You can still retrieve the result via the [status endpoint](/docs/video/status).
+
+<Callout type="warning" title="Idempotency">
+  Your webhook handler may receive the same event more than once (due to retries). Use the `jobId` to deduplicate and ensure idempotent processing.
+</Callout>
+
+## Example Webhook Handler
+
+<CodeBlock
+  language="javascript"
+  title="Express.js webhook handler"
+  code={`const express = require('express');
+const app = express();
+app.use(express.json());
+
+app.post('/webhooks/powerads', (req, res) => {
+  const { jobId, status, videoUrl, userId } = req.body;
+
+  console.log(\`Video \${jobId} — \${status}\`);
+
+  if (status === 'done') {
+    // Save video URL to your database
+    // Notify your user, update UI, etc.
+    console.log(\`Video ready: \${videoUrl}\`);
+  } else if (status === 'failed') {
+    // Handle failure — retry, notify, log
+    console.error(\`Video \${jobId} failed: \${req.body.error}\`);
+  }
+
+  // Always respond 2xx
+  res.status(200).json({ received: true });
+});
+
+app.listen(3000, () => console.log('Webhook server running on :3000'));`}
+/>
+
+<Callout type="info" title="Testing locally?">
+  Use a tunneling tool like <a href="https://ngrok.com" target="_blank" rel="noopener noreferrer">ngrok</a> to expose your local server for webhook testing.
+</Callout>
