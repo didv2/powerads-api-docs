@@ -24,7 +24,7 @@ Create an AI-generated video ad. The request starts an asynchronous pipeline —
   { name: 'customInstructions', type: 'string', description: 'Free-text creative direction for the AI scriptwriter' },
   { name: 'keyBenefits', type: 'string[]', description: 'List of key selling points to highlight in the ad' },
   { name: 'images', type: 'string[]', description: 'URLs to brand images (logo, product photos) to include' },
-  { name: 'modelId', type: 'string', description: 'ID of an AI presenter model (from video_models)' },
+  { name: 'modelId', type: 'string', description: 'ID of an AI presenter model (from video_models). If not provided, a default model is used.' },
   { name: 'modelImageUrl', type: 'string', description: 'Direct URL to a presenter image (alternative to modelId)' },
   { name: 'captionStyle', type: 'string', default: '"classic"', description: 'Caption overlay style: classic, minimal, bold, or none' },
   { name: 'aspectRatio', type: 'string', default: '"9:16"', description: 'Video dimensions: 9:16 (vertical), 16:9 (landscape), or 1:1 (square)' },
