@@ -25,7 +25,7 @@ Pass the `modelId` parameter in your [generate request](/docs/video/generate):
   language="json"
   code={`{
   "businessName": "Café Sol",
-  "modelId": "model_sarah_01",
+  "modelId": "c63cc91a-6563-478f-8007-97d0cbf0d38b",
   "adStyle": "ugc",
   "language": "he"
 }`}
@@ -33,9 +33,96 @@ Pass the `modelId` parameter in your [generate request](/docs/video/generate):
 
 The AI will generate the video with that model as the on-screen presenter, using their face and voice.
 
-## Model Sources
+<Callout type="info">
+  If you don't pass a <code>modelId</code>, the default model (<strong>Dana</strong>) is used automatically.
+</Callout>
 
-### Personal Models (Studio)
+## Public Model Catalog
+
+The following models are available for all users. Use any of these IDs in the `modelId` field:
+
+<div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 gap-4 my-6">
+  <div className="text-center">
+    <img src="https://ocfjqwf3uvpnj3wa.public.blob.vercel-storage.com/v3/model-refine-12305871/refine_2-3njGj5JpftqUJuwUX6xOhXkIfjf17A.png" alt="Dana" className="w-24 h-24 rounded-full mx-auto object-cover border-2 border-emerald-200" />
+    <p className="text-sm font-semibold mt-2">Dana ⭐</p>
+    <p className="text-xs text-gray-500">Female · Default</p>
+    <code className="text-[10px] text-gray-400 break-all">c63cc91a-6563-478f-8007-97d0cbf0d38b</code>
+  </div>
+  <div className="text-center">
+    <img src="https://ocfjqwf3uvpnj3wa.public.blob.vercel-storage.com/v3/model-gen-12305871/option_2-T6wxyn2OYZCRscYMw3FAmCo2o7977l.png" alt="Dana Auburn" className="w-24 h-24 rounded-full mx-auto object-cover border-2 border-gray-200" />
+    <p className="text-sm font-semibold mt-2">Dana (Auburn)</p>
+    <p className="text-xs text-gray-500">Female</p>
+    <code className="text-[10px] text-gray-400 break-all">deb56bcb-0c3d-42ad-ba46-99e67b068bc5</code>
+  </div>
+  <div className="text-center">
+    <img src="https://ocfjqwf3uvpnj3wa.public.blob.vercel-storage.com/v3/model-refine-12305871/refine_1-Z2rTQt2J2TzvyXcsoHnwdCJ9118IaT.png" alt="Paz" className="w-24 h-24 rounded-full mx-auto object-cover border-2 border-gray-200" />
+    <p className="text-sm font-semibold mt-2">Paz</p>
+    <p className="text-xs text-gray-500">Female</p>
+    <code className="text-[10px] text-gray-400 break-all">e6c63fcf-bf6d-44ba-812c-b4fbc816e6ba</code>
+  </div>
+  <div className="text-center">
+    <img src="https://ocfjqwf3uvpnj3wa.public.blob.vercel-storage.com/v3/model-refine-12305871/refine_1-WqbA87Y03CzZPluSwYqCMGiDcU4P4v.png" alt="Liat" className="w-24 h-24 rounded-full mx-auto object-cover border-2 border-gray-200" />
+    <p className="text-sm font-semibold mt-2">Liat</p>
+    <p className="text-xs text-gray-500">Female</p>
+    <code className="text-[10px] text-gray-400 break-all">66f662fe-de33-4afb-8b3d-161fe7f05219</code>
+  </div>
+  <div className="text-center">
+    <img src="https://ocfjqwf3uvpnj3wa.public.blob.vercel-storage.com/v3/model-refine-12305871/refine_2-e70wiC2HpH6BqK2j4GCnDuTHbEqz9H.png" alt="Liel" className="w-24 h-24 rounded-full mx-auto object-cover border-2 border-gray-200" />
+    <p className="text-sm font-semibold mt-2">Liel</p>
+    <p className="text-xs text-gray-500">Female</p>
+    <code className="text-[10px] text-gray-400 break-all">527e32a1-5332-4330-9e78-ab7557901531</code>
+  </div>
+  <div className="text-center">
+    <img src="https://ocfjqwf3uvpnj3wa.public.blob.vercel-storage.com/v3/model-gen-12305871/option_1-8VPtf8HRjWTbkepoGuFv8ad5TXkqKo.png" alt="Ronit" className="w-24 h-24 rounded-full mx-auto object-cover border-2 border-gray-200" />
+    <p className="text-sm font-semibold mt-2">Ronit</p>
+    <p className="text-xs text-gray-500">Female</p>
+    <code className="text-[10px] text-gray-400 break-all">b9af896f-6f72-4f07-9d26-cd443321e0f4</code>
+  </div>
+  <div className="text-center">
+    <img src="https://ocfjqwf3uvpnj3wa.public.blob.vercel-storage.com/v3/model-refine-12305871/refine_0-gVwsWjIPGxBNSezIaFPITvECr6w6Qg.png" alt="Noa" className="w-24 h-24 rounded-full mx-auto object-cover border-2 border-gray-200" />
+    <p className="text-sm font-semibold mt-2">Noa</p>
+    <p className="text-xs text-gray-500">Female</p>
+    <code className="text-[10px] text-gray-400 break-all">da62eeb0-bdb0-44ee-a2a5-fdbb545325fa</code>
+  </div>
+  <div className="text-center">
+    <img src="https://ocfjqwf3uvpnj3wa.public.blob.vercel-storage.com/v3/model-gen-12305871/option_0-GmcHu3wHTfdrwB44MsmrQpMjINoWfo.png" alt="Liel 2" className="w-24 h-24 rounded-full mx-auto object-cover border-2 border-gray-200" />
+    <p className="text-sm font-semibold mt-2">Liel (v2)</p>
+    <p className="text-xs text-gray-500">Female</p>
+    <code className="text-[10px] text-gray-400 break-all">8e7052b7-8e36-48ab-bb5d-9a91ff7cab67</code>
+  </div>
+  <div className="text-center">
+    <img src="https://ocfjqwf3uvpnj3wa.public.blob.vercel-storage.com/v3/model-gen-12305871/option_1-vPwTOcihDPcmFDU5cmuwgRi9bbHSbw.png" alt="Natan" className="w-24 h-24 rounded-full mx-auto object-cover border-2 border-gray-200" />
+    <p className="text-sm font-semibold mt-2">Natan</p>
+    <p className="text-xs text-gray-500">Male</p>
+    <code className="text-[10px] text-gray-400 break-all">54b1b853-4d75-43c7-be9b-b8307d45002b</code>
+  </div>
+  <div className="text-center">
+    <img src="https://ocfjqwf3uvpnj3wa.public.blob.vercel-storage.com/v3/model-refine-12305871/refine_1-ItPL3IVQVZMA42tD1KEMjIi71IZGIb.png" alt="Amnon" className="w-24 h-24 rounded-full mx-auto object-cover border-2 border-gray-200" />
+    <p className="text-sm font-semibold mt-2">Amnon</p>
+    <p className="text-xs text-gray-500">Male</p>
+    <code className="text-[10px] text-gray-400 break-all">c060292b-8d3c-44ec-9b8c-a2de51b92605</code>
+  </div>
+  <div className="text-center">
+    <img src="https://ocfjqwf3uvpnj3wa.public.blob.vercel-storage.com/v3/model-refine-12305871/refine_2-EkrJ1iM6cnJnqfK6JkafPqnWmVVeSF.png" alt="Omri" className="w-24 h-24 rounded-full mx-auto object-cover border-2 border-gray-200" />
+    <p className="text-sm font-semibold mt-2">Omri</p>
+    <p className="text-xs text-gray-500">Male</p>
+    <code className="text-[10px] text-gray-400 break-all">6d79b1f5-aab8-4f98-afa7-c30ea01d1476</code>
+  </div>
+  <div className="text-center">
+    <img src="https://ocfjqwf3uvpnj3wa.public.blob.vercel-storage.com/v3/model-gen-12305871/option_1-Dk1wPAZqm2WYXIEK76oeofc2Hlmojx.png" alt="Ronen" className="w-24 h-24 rounded-full mx-auto object-cover border-2 border-gray-200" />
+    <p className="text-sm font-semibold mt-2">Ronen</p>
+    <p className="text-xs text-gray-500">Male</p>
+    <code className="text-[10px] text-gray-400 break-all">5c14067e-707d-4313-9e86-9204c42830a0</code>
+  </div>
+  <div className="text-center">
+    <img src="https://ocfjqwf3uvpnj3wa.public.blob.vercel-storage.com/v3/model-gen-12305871/option_1-LgKpHSlWKffi8hHwa6a4Ip6B0sSOBk.png" alt="Ronen Magnezi" className="w-24 h-24 rounded-full mx-auto object-cover border-2 border-gray-200" />
+    <p className="text-sm font-semibold mt-2">Ronen Magnezi</p>
+    <p className="text-xs text-gray-500">Male</p>
+    <code className="text-[10px] text-gray-400 break-all">87f322a5-76e0-49a3-b507-59356f3571fe</code>
+  </div>
+</div>
+
+## Personal Models (Studio)
 
 Create custom models in the **PowerAds Studio**:
 
@@ -44,11 +131,7 @@ Create custom models in the **PowerAds Studio**:
 3. Select a voice
 4. The model is available immediately in your API requests
 
-Personal models are **private to your account** — only you can use them.
-
-### Public Catalog
-
-PowerAds also provides a catalog of pre-made models that any user can use. Browse them in **Dashboard → Studio → Model Catalog**.
+Personal models are **private to your account** — only you can use them via the API.
 
 ## Alternative: Direct Image URL
 
