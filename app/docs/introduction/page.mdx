@@ -3,24 +3,35 @@ import { Callout } from '@/components/callout';
 
 # Welcome to PowerAds API
 
-PowerAds lets you generate professional AI-powered video ads through a simple REST API. Describe your business, choose a style, and get a production-ready video — all via a single API call.
+PowerAds lets you generate professional AI-powered marketing assets through a simple REST API. Describe your business, choose a style, and get production-ready content — all via a single API call.
 
 ## Base URL
 
-All API requests are made to:
+All API requests go through our central gateway:
 
-<CodeBlock code="https://video-api.powerads.ai" language="text" />
+<CodeBlock code="https://api.powerads.ai" language="text" />
+
+The gateway handles authentication, rate limiting, and routes your requests to the appropriate service.
+
+## Available APIs
+
+| API | Prefix | Status |
+|-----|--------|--------|
+| **Video Generation** | `/api/v1/video/*` | ✅ Available |
+| Landing Pages | `/api/v1/lp/*` | 🔜 Coming soon |
+| Banners | `/api/v1/banner/*` | 🔜 Coming soon |
+| Social Posts | `/api/v1/social/*` | 🔜 Coming soon |
 
 ## Capabilities
 
 - **Video Generation** — Create AI-powered video ads with scripts, voiceover, music, captions, and AI-generated visuals
 - **Multiple Styles** — UGC, cinematic, product-focused, and more
 - **AI Presenters** — Use custom or catalog video models as on-screen talent
-- **Webhook Notifications** — Get notified when your video is ready
-- **Multi-language Support** — Generate ads in Hebrew, English, and more
+- **Webhook Notifications** — Get notified when your content is ready
+- **Multi-language Support** — Generate content in Hebrew, English, and more
 
 <Callout type="info" title="More coming soon">
-  We're actively expanding the API. Image generation, A/B testing, and campaign management endpoints are on the roadmap.
+  We're actively expanding the API. Landing pages, banners, social posts, and campaign management endpoints are on the roadmap.
 </Callout>
 
 ## Quick Start
@@ -30,7 +41,7 @@ Here's a minimal example to generate a video ad:
 <CodeBlock
   language="bash"
   title="Generate a video"
-  code={`curl -X POST https://video-api.powerads.ai/api/v1/video/generate \\
+  code={`curl -X POST https://api.powerads.ai/api/v1/video/generate \\
   -H "Content-Type: application/json" \\
   -H "x-api-key: pk_live_your_api_key_here" \\
   -d '{
@@ -47,7 +58,7 @@ Here's a minimal example to generate a video ad:
   language="json"
   title="200 OK"
   code={`{
-  "jobId": "job_abc123def456",
+  "jobId": "pipe_abc123def456",
   "status": "processing",
   "message": "Video generation started. Use the status endpoint to track progress."
 }`}
@@ -55,8 +66,22 @@ Here's a minimal example to generate a video ad:
 
 Then poll the status endpoint or use a webhook to know when it's done. That's it — you're generating video ads with AI.
 
+## How It Works
+
+```
+Your App → api.powerads.ai → Video Service → Video Ready → Webhook
+              (gateway)         (pipeline)
+```
+
+1. **Authenticate** with your personal API key (`pk_live_...`)
+2. **Send a request** describing your business and preferences
+3. **Get a job ID** immediately
+4. **Track progress** via status endpoint or receive a webhook when done
+5. **Download** your finished video
+
 ## Next Steps
 
 - [Authentication](/docs/authentication) — Set up your API key
 - [Generate Video](/docs/video/generate) — Full endpoint reference
+- [Video Models](/docs/models) — Browse available AI presenters
 - [Token System](/docs/billing) — Understand usage and billing

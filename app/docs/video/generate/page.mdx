@@ -38,7 +38,7 @@ Create an AI-generated video ad. The request starts an asynchronous pipeline —
   {
     label: 'cURL',
     language: 'bash',
-    code: `curl -X POST https://video-api.powerads.ai/api/v1/video/generate \\
+    code: `curl -X POST https://api.powerads.ai/api/v1/video/generate \\
   -H "Content-Type: application/json" \\
   -H "x-api-key: pk_live_your_api_key_here" \\
   -d '{
@@ -59,7 +59,7 @@ Create an AI-generated video ad. The request starts an asynchronous pipeline —
     label: 'JavaScript',
     language: 'javascript',
     code: `const response = await fetch(
-  'https://video-api.powerads.ai/api/v1/video/generate',
+  'https://api.powerads.ai/api/v1/video/generate',
   {
     method: 'POST',
     headers: {
@@ -91,7 +91,7 @@ console.log(data.jobId); // "job_abc123def456"`
     code: `import requests
 
 response = requests.post(
-    "https://video-api.powerads.ai/api/v1/video/generate",
+    "https://api.powerads.ai/api/v1/video/generate",
     headers={
         "Content-Type": "application/json",
         "x-api-key": "pk_live_your_api_key_here",

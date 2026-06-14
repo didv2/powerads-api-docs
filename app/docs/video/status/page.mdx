@@ -14,7 +14,7 @@ Check the current status of a video generation job. Use the `jobId` returned fro
 
 <CodeBlock
   language="bash"
-  code={`curl https://video-api.powerads.ai/api/v1/video/status/job_abc123def456 \\
+  code={`curl https://api.powerads.ai/api/v1/video/status/job_abc123def456 \\
   -H "x-api-key: pk_live_your_api_key_here"`}
 />
 
@@ -103,7 +103,7 @@ If you're not using webhooks, poll the status endpoint periodically:
 <CodeBlock
   language="javascript"
   code={`async function waitForVideo(jobId, apiKey) {
-  const url = \`https://video-api.powerads.ai/api/v1/video/status/\${jobId}\`;
+  const url = \`https://api.powerads.ai/api/v1/video/status/\${jobId}\`;
 
   while (true) {
     const res = await fetch(url, {
